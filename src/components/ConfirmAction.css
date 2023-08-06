@@ -1,0 +1,55 @@
+
+  .darkBackground {
+        height: 200%;
+        width: 100%;
+        position: fixed;
+        background-color: rgba(0, 0, 0, .75);
+        transition: .3s;
+        /* CHECK LATER */
+        top: 0;
+    }
+
+.modalContainer {
+    background-color: #F4F4F4;
+    height: 18.5rem;
+    width: 80%;
+    margin-right: auto;
+    margin-left: auto;
+    padding: 1rem;
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+    transform: translate(-50%, -100%);
+}
+
+.modalButtons {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    gap: 1rem;
+
+}
+
+.modalTitle {
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modalTitle h3 {
+    padding: .6rem;
+}
+
+.confirmButton{
+    background-color: transparent;
+    color: #f53649;
+    border: 1px solid #f53649
+}
+
+.cancelButton{
+    background-color: transparent;
+    color: #03466B;
+    border: 1px solid #03466B;
+
+}

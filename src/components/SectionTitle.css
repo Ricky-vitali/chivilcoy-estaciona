@@ -1,0 +1,15 @@
+.sectionTitleContainer {
+    font-size: 1.6rem;
+    width: 80%;
+}
+
+/* .sectionTitleContainer hr{
+    width: 50%;
+} */
+.sectionTitleContainer h2 {
+    text-align: center;
+    color: #03466B;
+    font-size: 1.5rem;
+    margin-top: 1rem;
+
+}

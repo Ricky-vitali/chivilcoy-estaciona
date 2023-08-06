@@ -1,0 +1,14 @@
+.customAlert {
+  padding: 1rem;
+  background-color: #F4F4F4;
+  text-align: center;
+  border-bottom: 3px solid #5BB14C;
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50%;
+  max-width: 400px;
+}
+
+/* 5BB14C verde */

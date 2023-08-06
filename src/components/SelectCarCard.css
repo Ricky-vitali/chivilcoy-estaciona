@@ -1,0 +1,22 @@
+.selectVehicleCard{
+    background-color: #EAEAEA;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 1rem 0;
+    border-radius: 10px;
+}
+
+.selectVehicleCard.selected {
+  border: 2px solid #FABF33;
+}
+
+input[type=number]{
+    width: 100%;
+    padding: .3rem;
+    border: none;
+}
+
+input[type=checkbox]{
+  display: none;
+}

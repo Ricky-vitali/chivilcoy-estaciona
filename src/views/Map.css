@@ -1,0 +1,21 @@
+.googleMap{
+    min-height: 60vh;
+}
+
+
+/* REMEMBER: MOVE TO IT'S CORRESPONDING COMPONENT */
+
+.sectionContainer{
+    background-color: #ffff;
+    min-height: 40vh;
+}
+
+img[src$="carLocation.svg"] {
+  width: 50px !important;
+  height: 50px !important;
+}
+
+img[src$="myLocation.svg"] {
+  width: 40px !important;
+  height: 40px !important;
+}

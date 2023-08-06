@@ -1,0 +1,38 @@
+.profileContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.dataContainer{
+    width: 80%;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+}
+
+.dataPlacerHolder{
+    display: flex;
+    flex-direction: column;
+    text-align: start;
+    gap: 1rem;
+}
+
+.dataPlacerHolder p::after{
+    display: flex;
+    content: "";
+    position: absolute;
+    width: 80vw;
+    height: 1px;
+    opacity: 50%;
+    margin-top: 0.5rem;
+    background-color: gray;
+
+}
+
+.userData{
+    display: flex;
+    flex-direction: column;
+    text-align: end;
+    gap: 1rem;
+}
