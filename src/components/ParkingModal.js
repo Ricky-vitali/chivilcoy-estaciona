@@ -22,7 +22,7 @@ const ParkingModal = ( props, onFormSubmit ) => {
 
     const createPreference = async () => {
         try {
-            const response = await axios.post("https://estaciona-chivilcoy.onrender.com/create_preference", {
+            const response = await axios.post("http://localhost:8080/create_preference", {
                 description: `Estacionar ${selectedCarPlate} por ${parkingTimes[selectedCarId]} Minutos`,
                 price: 2 * parkingTimes[selectedCarId],
                 quantity: 1,
@@ -37,16 +37,17 @@ const ParkingModal = ( props, onFormSubmit ) => {
     };
 
     const handleBuy = async () => {
+
         const id = await createPreference();
         if (id) {
             setPreferenceId(id);
         }
-    };
+    }; 
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`https://estaciona-chivilcoy.onrender.com/getUserData/${currentUser.uid}`);
+                const response = await axios.get(`http://localhost:8080/getUserData/${currentUser.uid}`);
 
                 console.log("Get cars:", response.data);
                 setCarsData(response.data);
@@ -64,7 +65,7 @@ const ParkingModal = ( props, onFormSubmit ) => {
 
 
     const handleCarSelect = (selectedCar) => {
-        handleBuy()  
+       
         console.log("Click", selectedCar)
 
         setSelectedCarId(selectedCar.carId);
@@ -73,6 +74,8 @@ const ParkingModal = ( props, onFormSubmit ) => {
             ...prevParkingTimes,
             [selectedCar.carId]: prevParkingTimes[selectedCar.carId] || "", // Set the parking time for the selected car or an empty string if it's not set yet
         }));
+
+
     };
 
     const handleTimeChange = (carId, time) => {
@@ -83,8 +86,10 @@ const ParkingModal = ( props, onFormSubmit ) => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+
+
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(async (position) => {
                 const userCoords = {
@@ -93,7 +98,7 @@ const ParkingModal = ( props, onFormSubmit ) => {
                 };
                 console.log(userCoords,parkingTimes);
                 try {
-                    const response = await axios.post("https://estaciona-chivilcoy.onrender.com/parkCar", {
+                    const response = await axios.post("http://localhost:8080/parkCar", {
                         coordinates: userCoords,
                         carId: selectedCarId,
                         userId: currentUser.uid, 
@@ -131,7 +136,7 @@ const ParkingModal = ( props, onFormSubmit ) => {
                 ) : (
                     <>
                         <div className="modalForm">
-                            <form  onSubmit={handleSubmit} >
+                            <form onSubmit={handleSubmit} >
                                 <div className="selectableCarsContainer">
                                 {carsData.map((car) => {
                                     const isCarParked = car.isParked === true;
@@ -148,11 +153,11 @@ const ParkingModal = ( props, onFormSubmit ) => {
                                     );
                                 })}
                                 </div>
-                        
-                                    <button onClick={handleBuy}>Estacionar</button>
+                                    {!preferenceId && <button type="button" onClick={handleBuy} >Pagar y Estacionar</button>}
+                                    {preferenceId && <Wallet initialization={{ preferenceId }} />}
+                           
                             </form>
-                        {/*         <button onClick={handleBuy}>Estacionar</button> */}
-                                {preferenceId && <Wallet initialization={{ preferenceId }} />}
+                                
                         </div>
                     </>
                 )}
