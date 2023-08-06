@@ -3,11 +3,14 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { LoadScript } from '@react-google-maps/api';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
+    <LoadScript googleMapsApiKey="AIzaSyD6x9gGH3e39mdN0wdnHgqzYW5iM-lnpTY">
     <App />
+    </LoadScript>
   </React.StrictMode>
 );
 
