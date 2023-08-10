@@ -38,12 +38,12 @@ const ParkingModal = ( props, onFormSubmit ) => {
                         },
                     ],  
                 back_urls: {
-                    success: `https://chivilcoy-estaciona.onrender.com/success/${collectorId}`,
-                    pending: "https://chivilcoy-estaciona.onrender.com/"
+                    success: `http://localhost:3000/success/`,
+                    pending: "http://localhost:3000/"
                 },
                 external_reference: `${currentUser.uid}`,
            
-                notification_url: "http://localhost:8080/webhook/mercadopago",
+                notification_url: "https://estaciona-chivilcoy.onrender.com/webhook/mercadopago",
             };
 
             const response = await axios.post("https://api.mercadopago.com/checkout/preferences", preferenceData, {
@@ -53,15 +53,17 @@ const ParkingModal = ( props, onFormSubmit ) => {
                 },
             })
 
-         
             const { id, collector_id } = response.data;
-            console.log (response)
-            return {id, collector_id};
+            const successURL = `https://chivilcoy-estaciona.onrender.com/success/?collector_id=${collector_id}`;
+            preferenceData.back_urls.success = successURL;
+            
+            console.log("Response:", response, "Back url:",successURL,)
+            return { id, collector_id };
         } catch (error) {
             console.log(error);
         }
     };
-    
+
 
     const getOrderStatus = async (parsedId) => {
         
@@ -138,15 +140,19 @@ const ParkingModal = ( props, onFormSubmit ) => {
     }; */
 
 
-
     const handleBuy = async (e) => {
-        e.preventDefault();
+       e.preventDefault();
         const id = await createPreference();
-        const parsedId = id.collector_id.toString();
-        console.log("Handlebuy:", id);
-        setCollectorId(parsedId);
-        setPreferenceId(id.id);
+        console.log("Handlebuy collect:", id.collector_id, id.id);
+        if (id) {
+            setPreferenceId(id.id);
+            setCollectorId(id.collector_id)
+
+        }
+       
+
     };
+
 
 
 
