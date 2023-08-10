@@ -85,7 +85,7 @@ const Register = () => {
             setError('');
             setLoading(true);
             /*  */
-            const response = await axios.post("http://localhost:8080/register", {
+            const response = await axios.post("https://estaciona-chivilcoy.onrender.com/register", {
                 email: email,
                 userName:username,
                 password:password,
