@@ -148,7 +148,7 @@ const ParkingModal = ( props, onFormSubmit ) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`https://estaciona-chivilcoy.onrender.comgetUserCars/${currentUser.uid}`);
+                const response = await axios.get(`https://estaciona-chivilcoy.onrender.com/getUserCars/${currentUser.uid}`);
 
                 console.log("Get cars:", response.data);
                 setCarsData(response.data);
