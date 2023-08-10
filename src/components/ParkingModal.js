@@ -63,12 +63,14 @@ const ParkingModal = ( props, onFormSubmit ) => {
 
     
 
-    const getOrderStatus = async () => {
+    const getOrderStatus = async (parsedId) => {
+        
         try {
+           
             const YOUR_ACCESS_TOKEN = 'TEST-2039711323530302-072700-102a314cf2e5d98a9a91f5c25c49f643-1102603889'; // Replace this with your MercadoPago access token
             console.log(`Bearer ${YOUR_ACCESS_TOKEN}`);
             /* https://www.mercadopago.com.ar/developers/es/reference/payments/_payments_id/get */
-            const response = await fetch(`https://api.mercadopago.com/v1/payments/${preferenceId}`, {
+            const response = await fetch(`https://api.mercadopago.com/v1/payments/${parsedId}`, {
                 headers: {
                     Authorization: `Bearer ${YOUR_ACCESS_TOKEN}`,
                 },
@@ -136,16 +138,17 @@ const ParkingModal = ( props, onFormSubmit ) => {
     }; */
 
 
-     const handleBuy = async (e) => {
+    const handleBuy = async (e) => {
         e.preventDefault();
         const id = await createPreference();
-        console.log("Handlebuy:", id)
+        const parsedId = id.toString();
+
         if (id) {
-            setPreferenceId(id);
-            const orderStatus = await getOrderStatus();
-            console.log("Order in handle buy:", orderStatus) 
+            setPreferenceId(parsedId);
+            await getOrderStatus(parsedId); // Pass parsedId to getOrderStatus
         }
     };
+
 
     useEffect(() => {
         const fetchData = async () => {
