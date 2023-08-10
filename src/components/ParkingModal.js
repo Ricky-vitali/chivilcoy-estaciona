@@ -42,7 +42,7 @@ const ParkingModal = ( props, onFormSubmit ) => {
                 },
                 external_reference: `${currentUser.uid}`,
            
-                notification_url: "http://localhost:8080/webhook/mercadopago",
+                notification_url: "https://estaciona-chivilcoy.onrender.com/webhook/mercadopago",
             };
 
             const response = await axios.post("https://api.mercadopago.com/checkout/preferences", preferenceData, {
