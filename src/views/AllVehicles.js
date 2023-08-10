@@ -49,7 +49,7 @@ const AllVehicles = (props) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/parkedCars/${currentUser.uid}/${isOfficer}`);
+                const response = await axios.get(`https://estaciona-chivilcoy.onrender.com/${currentUser.uid}/${isOfficer}`);
 
                 console.log("Get ALL cars officer:", response.data);
                 setCars(response.data);
