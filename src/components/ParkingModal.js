@@ -42,7 +42,7 @@ const ParkingModal = ( props, onFormSubmit ) => {
                 },
                 external_reference: `${currentUser.uid}`,
            
-                notification_url: "http://localhost:8080/webhook/mercadopago",
+                notification_url: "https://estaciona-chivilcoy.onrender.comwebhook/mercadopago",
             };
 
             const response = await axios.post("https://api.mercadopago.com/checkout/preferences", preferenceData, {
@@ -106,7 +106,7 @@ const ParkingModal = ( props, onFormSubmit ) => {
 /*    const getOrderStatus = async () => {
        try {
            const YOUR_ACCESS_TOKEN = 'TEST-2039711323530302-072700-102a314cf2e5d98a9a91f5c25c49f643-1102603889';
-           const response = await axios.get(`http://localhost:8080/getOrderStatus/${currentUser.uid}/${YOUR_ACCESS_TOKEN}`, {
+           const response = await axios.get(`https://estaciona-chivilcoy.onrender.comgetOrderStatus/${currentUser.uid}/${YOUR_ACCESS_TOKEN}`, {
 
            });
            console.log(response);
@@ -120,7 +120,7 @@ const ParkingModal = ( props, onFormSubmit ) => {
  */
 /*     const createPreference = async () => {
         try {
-            const response = await axios.post("http://localhost:8080/create_preference", {
+            const response = await axios.post("https://estaciona-chivilcoy.onrender.comcreate_preference", {
                 description: `Estacionar ${selectedCarPlate} por ${parkingTimes[selectedCarId]} Minutos`,
                 price: 2 * parkingTimes[selectedCarId],
                 quantity: 1,
@@ -148,7 +148,7 @@ const ParkingModal = ( props, onFormSubmit ) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/getUserCars/${currentUser.uid}`);
+                const response = await axios.get(`https://estaciona-chivilcoy.onrender.comgetUserCars/${currentUser.uid}`);
 
                 console.log("Get cars:", response.data);
                 setCarsData(response.data);
@@ -204,7 +204,7 @@ const ParkingModal = ( props, onFormSubmit ) => {
                 };
                 console.log(userCoords,parkingTimes);
                 try {
-                    const response = await axios.post("http://localhost:8080/parkCar", {
+                    const response = await axios.post("https://estaciona-chivilcoy.onrender.comparkCar", {
                         coordinates: userCoords,
                         carId: selectedCarId,
                         userId: currentUser.uid, 
