@@ -37,12 +37,12 @@ const ParkingModal = ( props, onFormSubmit ) => {
                         },
                     ],  
                 back_urls: {
-                    success: "https://chivilcoy-estaciona.onrender.com/",
+                    success: `https://chivilcoy-estaciona.onrender.com/success/${preferenceId}`,
                     pending: "https://chivilcoy-estaciona.onrender.com/"
                 },
                 external_reference: `${currentUser.uid}`,
            
-                notification_url: "https://estaciona-chivilcoy.onrender.com/webhook/mercadopago",
+                notification_url: "http://localhost:8080/webhook/mercadopago",
             };
 
             const response = await axios.post("https://api.mercadopago.com/checkout/preferences", preferenceData, {
@@ -53,14 +53,13 @@ const ParkingModal = ( props, onFormSubmit ) => {
             })
 
          
-            
-            console.log ("responseee:",response.data.collector_id) 
-            return response.data.collector_id;
+            const { id, collector_id } = response.data;
+            console.log (response)
+            return {id, collector_id};
         } catch (error) {
             console.log(error);
         }
     };
-
     
 
     const getOrderStatus = async (parsedId) => {
@@ -138,15 +137,13 @@ const ParkingModal = ( props, onFormSubmit ) => {
     }; */
 
 
+
     const handleBuy = async (e) => {
         e.preventDefault();
         const id = await createPreference();
-        const parsedId = id.toString();
-
-        if (id) {
-            setPreferenceId(parsedId);
-            await getOrderStatus(parsedId); // Pass parsedId to getOrderStatus
-        }
+        const parsedId = id.collector_id.toString();
+        console.log("Handlebuy:", id);
+        setPreferenceId(parsedId);
     };
 
 
