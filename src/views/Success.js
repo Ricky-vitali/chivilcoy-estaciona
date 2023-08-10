@@ -11,6 +11,10 @@ const Success = () => {
     const queryParams = new URLSearchParams(location.search);
     const collectorId = queryParams.get('collection_id');
 
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const collectorId = queryParams.get('collection_id');
+
     useEffect(() => {
         const getOrderStatus = async () => {
             try {
@@ -18,7 +22,7 @@ const Success = () => {
                 const YOUR_ACCESS_TOKEN = 'YOUR_MERCADOPAGO_ACCESS_TOKEN';
 
                 // Construct the correct URL to fetch payment status
-                const response = await fetch(`https://api.mercadopago.com/v1/payments/${collectorId}`, {
+                const response = await fetch(`https://api.mercadopago.com/v1/payments/1314295784`, {
                     headers: {
                         Authorization: `Bearer ${YOUR_ACCESS_TOKEN}`,
                     },
