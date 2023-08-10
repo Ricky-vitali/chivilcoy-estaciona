@@ -20,7 +20,7 @@ const ParkingModal = ( props, onFormSubmit ) => {
     const { currentUser } = useAuth();
     /*    notification_url: "https://webhook.site/9db91ceb-070f-4712-bb9d-81e45f99cc1e", */
     initMercadoPago('TEST-5baae833-7718-43e6-8882-b51ba5bf2111');
-/* 
+
     const createPreference = async () => {
         try {
             const YOUR_ACCESS_TOKEN = 'TEST-2039711323530302-072700-102a314cf2e5d98a9a91f5c25c49f643-1102603889'; // Replace this with your MercadoPago access token
@@ -28,7 +28,7 @@ const ParkingModal = ( props, onFormSubmit ) => {
             const preferenceData = {
                     items: [
                         {
-                            title: "Estacionamiento",
+                            title: `Estacionar ${selectedCarPlate} por ${parkingTimes[selectedCarId]} Minutos`,
                             description: `Estacionar ${selectedCarPlate} por ${parkingTimes[selectedCarId]} Minutos`,
                             category_id: "3333",
                             quantity: 1,
@@ -37,8 +37,8 @@ const ParkingModal = ( props, onFormSubmit ) => {
                         },
                     ],  
                 back_urls: {
-                    success: "https://estaciona-chivilcoy-j9mv.onrender.com/",
-                    pending: "https://estaciona-chivilcoy-j9mv.onrender.com/"
+                    success: "https://chivilcoy-estaciona.onrender.com/",
+                    pending: "https://chivilcoy-estaciona.onrender.com/"
                 },
                 external_reference: `${currentUser.uid}`,
            
@@ -58,9 +58,9 @@ const ParkingModal = ( props, onFormSubmit ) => {
             console.log(error);
         }
     };
- */
+
     
-/* 
+
 
     const getOrderStatus = async () => {
         try {
@@ -83,7 +83,7 @@ const ParkingModal = ( props, onFormSubmit ) => {
         } catch (error) {
             console.log(error);
         }
-    }; */
+    }; 
 /*    const getOrderStatus = async () => {
     
        try {
@@ -134,8 +134,8 @@ const ParkingModal = ( props, onFormSubmit ) => {
         }
     }; */
 
-/*     const handleBuy = async () => {
-
+     const handleBuy = async (e) => {
+        e.preventDefault();
         const id = await createPreference();
         console.log("Handlebuy:", id.id, id)
         if (id) {
@@ -143,7 +143,7 @@ const ParkingModal = ( props, onFormSubmit ) => {
             const orderStatus = await getOrderStatus();
             console.log("Order in hnandle buy:", orderStatus) 
         }
-    };  */
+    };  
 
     useEffect(() => {
         const fetchData = async () => {
@@ -190,6 +190,7 @@ const ParkingModal = ( props, onFormSubmit ) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+    
         if (!selectedCarId || !parkingTimes[selectedCarId]) {
             setErrorMessage("Por favor, seleccione un vehículo y el tiempo de estacionamiento.");
             return; 
@@ -249,7 +250,7 @@ const ParkingModal = ( props, onFormSubmit ) => {
                 ) : (
                     <>
                         <div className="modalForm">
-                            <form onSubmit={handleSubmit} >
+                            <form onSubmit={handleBuy}  >
                                 <div className="selectableCarsContainer">
                                 {carsData.map((car) => {
                                     const isCarParked = car.isParked === true;
@@ -268,10 +269,12 @@ const ParkingModal = ( props, onFormSubmit ) => {
                                 </div>
                                     {errorMessage  && <p className="formMessage"> {errorMessage} </p>}
                                     <button>Estacionar</button>
-                          {/*           {preferenceId && <Wallet initialization={{ preferenceId }} />} */}
+                                    
+                                    
                                     
                             </form>
-                               
+                            
+                                {preferenceId && <Wallet initialization={{ preferenceId }} />} 
                         </div>
                            
                     </>
