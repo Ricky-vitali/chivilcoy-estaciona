@@ -27,7 +27,7 @@ const AddCarModal = (props) => {
         const currentUser = auth.currentUser;
 
         try {
-            const response = await axios.post("http://localhost:8080/createCar", {
+            const response = await axios.post("https://estaciona-chivilcoy.onrender.com/createCar", {
                 carName: carName,
                 plate: carPlate,
                 userId: currentUser.uid,
