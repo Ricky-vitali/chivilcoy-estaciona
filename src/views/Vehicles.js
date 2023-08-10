@@ -75,7 +75,7 @@ const Vehicles = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/getUserCars/${currentUser.uid}`);
+                const response = await axios.get(`https://estaciona-chivilcoy.onrender.com/getUserCars/${currentUser.uid}`);
 
                 console.log("Get cars Vehicle section:", response.data);
                 setCars(response.data);
@@ -111,7 +111,7 @@ const Vehicles = () => {
     const handleConfirmDelete = async () => {
         try {
             // Perform the car deletion using axios
-            const response = await axios.delete("http://localhost:8080/deleteCar", {
+            const response = await axios.delete("https://estaciona-chivilcoy.onrender.com/deleteCar", {
                 data: {
                     userId: currentUser.uid,
                     carId: carToDeleteId,
