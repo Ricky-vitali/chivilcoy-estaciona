@@ -36,7 +36,7 @@ const Profile = () => {
         }
 
         try {
-            const response = await axios.post("http://localhost:8080/changePassword", {
+            const response = await axios.post("https://estaciona-chivilcoy.onrender.com/changePassword", {
                 userId: currentUser.uid, 
                 newPassword: newPassword
             });
@@ -54,7 +54,7 @@ const Profile = () => {
         console.log("Confirm to delete user id:",userToDeleteId)
 
         try {
-            const response = await axios.delete(`http://localhost:8080/deleteUser/${userToDeleteId}`, {
+            const response = await axios.delete(`https://estaciona-chivilcoy.onrender.com/deleteUser/${userToDeleteId}`, {
    
             });
             console.log("Delete my account response:", response);
