@@ -17,6 +17,7 @@ const ParkingModal = ( props, onFormSubmit ) => {
     const [loading, setLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState(null);
     const [preferenceId, setPreferenceId] = useState(null);
+    const [collectorId, setCollectorId] = useState(null);
     const { currentUser } = useAuth();
     /*    notification_url: "https://webhook.site/9db91ceb-070f-4712-bb9d-81e45f99cc1e", */
     initMercadoPago('TEST-5baae833-7718-43e6-8882-b51ba5bf2111');
@@ -37,7 +38,7 @@ const ParkingModal = ( props, onFormSubmit ) => {
                         },
                     ],  
                 back_urls: {
-                    success: `https://chivilcoy-estaciona.onrender.com/success/${preferenceId}`,
+                    success: `https://chivilcoy-estaciona.onrender.com/success/${collectorId}`,
                     pending: "https://chivilcoy-estaciona.onrender.com/"
                 },
                 external_reference: `${currentUser.uid}`,
@@ -143,8 +144,10 @@ const ParkingModal = ( props, onFormSubmit ) => {
         const id = await createPreference();
         const parsedId = id.collector_id.toString();
         console.log("Handlebuy:", id);
-        setPreferenceId(parsedId);
+        setCollectorId(parsedId);
+        setPreferenceId(id.id);
     };
+
 
 
     useEffect(() => {
