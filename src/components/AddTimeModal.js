@@ -24,7 +24,7 @@ const AddTimeModal = (props) => {
         }
 
         try {
-            const response = await axios.post(`http://localhost:8080/addTime/${props.car.id}/${additionalTime}`, {
+            const response = await axios.post(`https://estaciona-chivilcoy.onrender.com/addTime/${props.car.id}/${additionalTime}`, {
                 carId: props.car.id,
                 time: additionalTime
 
