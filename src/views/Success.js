@@ -20,7 +20,7 @@ const Success = () => {
         const unsubscribe = onValue(databaseRef, (snapshot) => {
             const data = snapshot.val();
             if (data) {
-                // Convert the object of cars into an array
+           
                 const carsArray = Object.entries(data).map(([id, car]) => ({
                     id,
                     ...car,
@@ -29,9 +29,9 @@ const Success = () => {
             }
         });
 
-        // Clean up the database listener on component unmount
+  
         return () => {
-            // Detach the listener
+
             off(databaseRef, unsubscribe);
         };
     }, [currentUser.uid]);

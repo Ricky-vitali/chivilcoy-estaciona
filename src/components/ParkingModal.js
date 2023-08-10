@@ -15,12 +15,110 @@ const ParkingModal = ( props, onFormSubmit ) => {
     const [selectedCarPlate, setSelectedCarPlate] = useState(null);
     const [parkingTimes, setParkingTimes] = useState({}); // Store parking time for each car
     const [loading, setLoading] = useState(true);
+    const [errorMessage, setErrorMessage] = useState(null);
     const [preferenceId, setPreferenceId] = useState(null);
     const { currentUser } = useAuth();
-
+    /*    notification_url: "https://webhook.site/9db91ceb-070f-4712-bb9d-81e45f99cc1e", */
     initMercadoPago('TEST-5baae833-7718-43e6-8882-b51ba5bf2111');
-
+/* 
     const createPreference = async () => {
+        try {
+            const YOUR_ACCESS_TOKEN = 'TEST-2039711323530302-072700-102a314cf2e5d98a9a91f5c25c49f643-1102603889'; // Replace this with your MercadoPago access token
+
+            const preferenceData = {
+                    items: [
+                        {
+                            title: "Estacionamiento",
+                            description: `Estacionar ${selectedCarPlate} por ${parkingTimes[selectedCarId]} Minutos`,
+                            category_id: "3333",
+                            quantity: 1,
+                            currency_id: "ARS",
+                            unit_price: 2 * parkingTimes[selectedCarId], 
+                        },
+                    ],  
+                back_urls: {
+                    success: "https://estaciona-chivilcoy-j9mv.onrender.com/",
+                    pending: "https://estaciona-chivilcoy-j9mv.onrender.com/"
+                },
+                external_reference: `${currentUser.uid}`,
+           
+                notification_url: "http://localhost:8080/webhook/mercadopago",
+            };
+
+            const response = await axios.post("https://api.mercadopago.com/checkout/preferences", preferenceData, {
+                headers: {
+                    Authorization: `Bearer ${YOUR_ACCESS_TOKEN}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            const { id } = response.data;
+            return response.data;
+        } catch (error) {
+            console.log(error);
+        }
+    };
+ */
+    
+/* 
+
+    const getOrderStatus = async () => {
+        try {
+            const YOUR_ACCESS_TOKEN = 'TEST-2039711323530302-072700-102a314cf2e5d98a9a91f5c25c49f643-1102603889'; // Replace this with your MercadoPago access token
+            console.log(`Bearer ${YOUR_ACCESS_TOKEN}`);
+
+            const response = await fetch('https://api.mercadopago.com/merchant_orders/10912306260', {
+                headers: {
+                    Authorization: `Bearer ${YOUR_ACCESS_TOKEN}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+            console.log("Order response:", data);
+            return data;
+        } catch (error) {
+            console.log(error);
+        }
+    }; */
+/*    const getOrderStatus = async () => {
+    
+       try {
+            const YOUR_ACCESS_TOKEN = 'TEST-2039711323530302-072700-102a314cf2e5d98a9a91f5c25c49f643-1102603889'; // Replace this with your MercadoPago access token
+            console.log(`Bearer ${YOUR_ACCESS_TOKEN}`)
+            const response = await axios.get(`https://api.mercadopago.com/merchant_orders/10912306260`, {
+                headers: {
+                    Authorization: `Bearer ${YOUR_ACCESS_TOKEN}`,
+                },
+            });
+            
+            console.log("Order reponse:",response)
+            return response.data;
+        } catch (error) {
+            console.log(error);
+        } 
+    };  */
+
+    
+/*    const getOrderStatus = async () => {
+       try {
+           const YOUR_ACCESS_TOKEN = 'TEST-2039711323530302-072700-102a314cf2e5d98a9a91f5c25c49f643-1102603889';
+           const response = await axios.get(`http://localhost:8080/getOrderStatus/${currentUser.uid}/${YOUR_ACCESS_TOKEN}`, {
+
+           });
+           console.log(response);
+           return response
+          
+       } catch (error) {
+           console.log(error);
+       }
+    }; 
+
+ */
+/*     const createPreference = async () => {
         try {
             const response = await axios.post("http://localhost:8080/create_preference", {
                 description: `Estacionar ${selectedCarPlate} por ${parkingTimes[selectedCarId]} Minutos`,
@@ -34,26 +132,29 @@ const ParkingModal = ( props, onFormSubmit ) => {
         } catch (error) {
             console.log(error);
         }
-    };
+    }; */
 
-    const handleBuy = async () => {
+/*     const handleBuy = async () => {
 
         const id = await createPreference();
+        console.log("Handlebuy:", id.id, id)
         if (id) {
-            setPreferenceId(id);
+            setPreferenceId(id.id);
+            const orderStatus = await getOrderStatus();
+            console.log("Order in hnandle buy:", orderStatus) 
         }
-    }; 
+    };  */
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/getUserData/${currentUser.uid}`);
+                const response = await axios.get(`http://localhost:8080/getUserCars/${currentUser.uid}`);
 
                 console.log("Get cars:", response.data);
                 setCarsData(response.data);
                 setLoading(false)
                 return response
-                // Handle the response data as needed, e.g., set it to state or perform other operations.
+             
             } catch (error) {
                 setLoading(false)
                 console.log(error);
@@ -74,7 +175,7 @@ const ParkingModal = ( props, onFormSubmit ) => {
             ...prevParkingTimes,
             [selectedCar.carId]: prevParkingTimes[selectedCar.carId] || "", // Set the parking time for the selected car or an empty string if it's not set yet
         }));
-
+        setErrorMessage("");
 
     };
 
@@ -84,11 +185,15 @@ const ParkingModal = ( props, onFormSubmit ) => {
             ...prevParkingTimes,
             [carId]: time,
         }));
+        setErrorMessage("");
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        if (!selectedCarId || !parkingTimes[selectedCarId]) {
+            setErrorMessage("Por favor, seleccione un vehículo y el tiempo de estacionamiento.");
+            return; 
+        }
 
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(async (position) => {
@@ -108,11 +213,19 @@ const ParkingModal = ( props, onFormSubmit ) => {
                     });
 
 
-                    console.log(response);
-                  /*   props.onClose(); */
+                    console.log("Al estacionar", response.status);
+    
+                    if (response.status === 200) {
+                        props.onGetNotification(response.data.message);
+                        props.onClose();
+                    } else {
+                        setErrorMessage(response.data.message); // Set the error message from the response
+                    }
                 } catch (error) {
                     console.log(error);
+                    setErrorMessage("Se produjo un error al procesar su solicitud."); // Set a default error message for network errors
                 }
+
                 
             });
         } else {
@@ -153,12 +266,14 @@ const ParkingModal = ( props, onFormSubmit ) => {
                                     );
                                 })}
                                 </div>
-                                    {!preferenceId && <button type="button" onClick={handleBuy} >Pagar y Estacionar</button>}
-                                    {preferenceId && <Wallet initialization={{ preferenceId }} />}
-                           
+                                    {errorMessage  && <p className="formMessage"> {errorMessage} </p>}
+                                    <button>Estacionar</button>
+                          {/*           {preferenceId && <Wallet initialization={{ preferenceId }} />} */}
+                                    
                             </form>
-                                
+                               
                         </div>
+                           
                     </>
                 )}
             </div>

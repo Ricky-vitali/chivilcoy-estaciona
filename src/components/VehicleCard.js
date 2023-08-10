@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCarSide } from '@fortawesome/free-solid-svg-icons';
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react'
 import AddTimeModal from './AddTimeModal';
 import AddTimeIcon from "../assets/timeAdd.svg"
@@ -11,12 +12,19 @@ import axios from 'axios';
 
 
 
-const VehicleCard = ({ car, onDeleteCar, disableDelete }) => {
+const VehicleCard = ({ car, onDeleteCar, disableDelete, onAddTimeNotification, onShowCar }) => {
     const [displayDetails, setDisplayDetails] = useState(false)
     const [showModal, setShowModal] = useState(false);
-    const [deleteButtonStatus, setDeleteButtonStatus] = useState(disableDelete);
+    const [notificationMessage, setNotificationMessage] = useState(null)
     const { currentUser } = useAuth();
-   
+
+
+    const handleAddTimeNotification = (message) => {
+        setNotificationMessage(message);
+        onAddTimeNotification(message);
+    };
+
+
     const handleOpenModal = () => {
         setShowModal(true);
     };
@@ -42,18 +50,24 @@ const VehicleCard = ({ car, onDeleteCar, disableDelete }) => {
             </div>
 
             <div className="secondContainer">
-                    {!deleteButtonStatus ?  
-                    <p style={carStatusStyle}>
-                        {car.isParked ? (
-                            <>
-                                Estacionado <span>{car.expirationTime}</span>
-                            </>
-                        ) : (
-                            'No Estacionado'
-                        )}
-                    </p>:("")}
-                    {car.isParked ? <img src={AddTimeIcon} alt="Add time icon" className="addTimeIcon" onClick={handleOpenModal} />:""}
-                <p onClick={() => { setDisplayDetails(!displayDetails) }} > {deleteButtonStatus ? "Ver Detalles":""} <FontAwesomeIcon icon={faAngleDown} /></p>
+
+                    {!disableDelete &&
+                <>
+                    {car.isParked ? (
+                        <p style={carStatusStyle}>
+                            Estacionado <span>{car.expirationTime}</span>
+                        </p>
+                    ) : (
+                        <p style={carStatusStyle}>No Estacionado</p>
+                    )}
+                    {car.isParked ? (
+                        <img src={AddTimeIcon} alt="Add time icon" className="addTimeIcon" onClick={handleOpenModal} />
+                    ) : (
+                        ""
+                    )}
+                </>
+                    }
+                  <FontAwesomeIcon icon={faAngleDown} onClick={() => { setDisplayDetails(!displayDetails) }} />
             </div>
 
                 {displayDetails &&
@@ -64,17 +78,23 @@ const VehicleCard = ({ car, onDeleteCar, disableDelete }) => {
                             <p>Modelo: {car.type}</p>
                             <p>Color: {car.color}</p>
                         </div>
-                        {deleteButtonStatus ? (
-                            "") : (<div>
-                                <FontAwesomeIcon icon={faTrash} onClick={() => onDeleteCar(car.id)} />
-                            </div>)
-                        }
+                        {disableDelete ? (
+                            <div>
+                                <FontAwesomeIcon icon={faMagnifyingGlass} onClick={() => onShowCar(car.coordinates)} />
+                            </div>
+                        ) : (
+                            !car.isParked && (
+                                <div className='cardDetailsTrash'>
+                                    <FontAwesomeIcon icon={faTrash} onClick={() => onDeleteCar(car.id)} />
+                                </div>
+                            )
+                        )}
                     </div>}
                 
-                {showModal && <AddTimeModal onClose={() => setShowModal(false)} car={car} />}
+                
 
-        </div>
-
+            </div>
+            {showModal && <AddTimeModal onAddTimeNotification={handleAddTimeNotification} onClose={() => setShowModal(false)} car={car} />}
  
 
 

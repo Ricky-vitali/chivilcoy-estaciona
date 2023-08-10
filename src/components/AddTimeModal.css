@@ -1,6 +1,6 @@
-.modalContainer {
-    background-color: #F4F4F4;
-    height: 20rem;
+.modalAddTimeContainer {
+background-color: #F4F4F4;
+    height: 12rem;
     width: 80%;
     margin-right: auto;
     margin-left: auto;
@@ -8,7 +8,7 @@
     position: absolute;
     bottom: 50%;
     left: 50%;
-    transform: translate(-50%, -100%);
+    transform: translate(-50%, -155%);
 }
 
 .modalTitle {
@@ -22,13 +22,16 @@
     padding: .6rem;
 }
 
-#cars {
-    width: 90%;
-    border: 2px solid #FABF33;
-    padding: 10px;
+.modalForm p{
+    text-align: center
+}
+
+.addTimeInput{
+    width: 80% !important;
+    border: 2px solid #FABF33 !important;
+    padding: 10px !important;
     border-radius: 10px;
     margin-top: 1.2rem;
-
     margin-right: auto;
     margin-left: auto;
 }

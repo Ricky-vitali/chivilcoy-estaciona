@@ -9,9 +9,9 @@
         top: 0;
     }
 
-.modalContainer {
+.modalConfirmContainer {
     background-color: #F4F4F4;
-    height: 18.5rem;
+    height: 10rem;
     width: 80%;
     margin-right: auto;
     margin-left: auto;
@@ -19,7 +19,7 @@
     position: absolute;
     bottom: 50%;
     left: 50%;
-    transform: translate(-50%, -100%);
+    transform: translate(-50%, -200%);
 }
 
 .modalButtons {

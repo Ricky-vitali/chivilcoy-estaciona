@@ -1,4 +1,3 @@
-// SelectCarCard.js
 import { useState } from 'react';
 import styles from './SelectCarCard.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -25,7 +24,7 @@ const SelectCarCard = ({ car, onSelect, isSelected, disabled, setParkingTime, pa
                 <h3>{car.name}</h3>
                 <p>Patente: {car.plate}</p>
             </div>
-            <div>
+            <div className="timeContainer">
                 <label htmlFor={`carCheckbox-${car.id}`}>Select</label>
                 <input
                     type="checkbox"
@@ -37,7 +36,7 @@ const SelectCarCard = ({ car, onSelect, isSelected, disabled, setParkingTime, pa
                     disabled={disabled}
                 />
 
-                <label htmlFor={`time-${car.id}`}>Tiempo en minutos</label>
+                <label htmlFor={`time-${car.id}`} className="timeLabel"> Minutos</label>
                 <input
                     type="number"
                     id={`time-${car.id}`}
@@ -45,8 +44,9 @@ const SelectCarCard = ({ car, onSelect, isSelected, disabled, setParkingTime, pa
                     min="1"
                     max="60"
                     value={parkingTime}
-                    onChange={(e) => setParkingTime(e.target.value)} // Use the local state handler for parking time change
+                    onChange={(e) => setParkingTime(e.target.value)}
                     disabled={disabled}
+                    placeholder='30 mins'
                 />
             </div>
             {disabled && <p className="parkedText">Ya está estacionado</p>}

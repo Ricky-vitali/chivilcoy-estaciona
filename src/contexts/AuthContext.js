@@ -28,48 +28,25 @@ export function AuthProvider({children}){
                             return userRef
                                 .set({
                                     documentNumber: dni,
-                                    isOfficer: false, // Set isOfficer to false by default
+                                    isOfficer: false, 
                                 })
                                 .then(() => {
-                                    resolve(); // Registration successful, resolve the promise
+                                    resolve(); // Registration successful
                                 })
                                 .catch((error) => {
-                                    reject(error); // Error updating user document, reject the promise
+                                    reject(error); 
                                 });
                         })
                         .catch((error) => {
-                            reject(error); // Error updating user profile, reject the promise
+                            reject(error); 
                         });
                 })
                 .catch((error) => {
-                    reject(error); // Error creating user, reject the promise
+                    reject(error); 
                 });
         });
     }
-/*     function register(email, password, userName, dni) {
-        return new Promise((resolve, reject) => {
-            auth.createUserWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    const user = userCredential.user;
-                    return user.updateProfile({
-                        displayName: userName
-                    }).then(() => {
-                        const userRef = database.ref('users').child(user.uid);
-                        return userRef.set({
-                            documentNumber: dni,
-                        }).then(() => {
-                            resolve(); // Registration successful, resolve the promise
-                        }).catch((error) => {
-                            reject(error); // Error updating user document, reject the promise
-                        });
-                    }).catch((error) => {
-                        reject(error); // Error updating user profile, reject the promise
-                    });
-                }).catch((error) => {
-                    reject(error); // Error creating user, reject the promise
-                });
-        });
-    } */
+
 
 
     async function checkIfDNIAlreadyExists(dni) {

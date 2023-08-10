@@ -2,6 +2,7 @@ import './Login.css';
 import { useRef, useState, useEffect } from 'react';
 import { Route, Routes, BrowserRouter, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import axios from 'axios';
 
 const Login = () => {
     const emailRef = useRef();
@@ -73,6 +74,22 @@ const Login = () => {
         }
     }, []);
 
+/*     const handleResetPassword = async(e) => {
+        e.preventDefault();
+
+        try {
+            const response = await axios.post("http://localhost:8080/resetPassword", {
+                email: emailRef.current.value
+            });
+            console.log("Register response:", response);
+
+            return response
+        } catch (error) {
+            console.log(error);
+        }
+    }
+ */
+
     return (
         <>
             <div className="logoHeader">
@@ -83,7 +100,7 @@ const Login = () => {
                 <h2>Iniciar Sesión</h2>
                 <p>Ingrese en su cuenta para comenzar a estacionar!</p>
                 <form onSubmit={handleSubmit}>
-                    <label htmlFor="userName">Email</label>
+                    <label htmlFor="email">Email</label>
                     <input type="text" name="email" id="email" placeholder="Email" ref={emailRef} required/>
 
                     <label htmlFor="password">Contraseña</label>
@@ -95,6 +112,12 @@ const Login = () => {
                         <p>No tienes cuenta ?</p>
                     </Link>
                 </form>
+{/*                 <form onSubmit={handleResetPassword}>
+                    <label htmlFor="email">Email</label>
+                    <input type="text" name="email" id="email" placeholder="Email" ref={emailRef} required />
+                    <button>Olvidaste tu contraseña</button>
+                </form> */}
+
             </div>
         </>
     );

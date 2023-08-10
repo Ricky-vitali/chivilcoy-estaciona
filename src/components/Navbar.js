@@ -35,9 +35,9 @@ const Navbar = (props) => {
                                 <li>
                                     <NavLink to="/parking"><FontAwesomeIcon icon={faSquareParking} /> Vehiculos Estacionados</NavLink>
                                 </li>
-                                <li>
+                     {/*            <li>
                                     <NavLink to="/support"><FontAwesomeIcon icon={faHeadset} /> Soporte</NavLink>
-                                </li>
+                                </li> */}
                                 <LogoutButton />
                             </>) : (                       
                                 <>
@@ -48,12 +48,12 @@ const Navbar = (props) => {
                                 <li>
                                     <NavLink to="/vehicles"><FontAwesomeIcon icon={faCar} /> Mis Vehiculos</NavLink>
                                 </li>
-                                <li>
+                           <li>
                                     <NavLink to="/profile"><FontAwesomeIcon icon={faUser} /> Mi Perfil</NavLink>
                                 </li>
-                                <li>
+         {/*                        <li>
                                     <NavLink to="/support"><FontAwesomeIcon icon={faHeadset} /> Soporte</NavLink>
-                                </li>
+                                </li>  */}
                                     <LogoutButton />
                                 </>
                                     )}

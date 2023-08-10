@@ -3,7 +3,6 @@
   padding: 0;
   text-decoration: none;
   list-style: none;
-
 }
 
 a:visited { text-decoration: none; color: #03466B; }
@@ -16,9 +15,34 @@ a:visited { text-decoration: none; color: #03466B; }
     min-height: 100vh;
     color: #03466B;
 }
+button {
+    width: 80%;
+    background-color: #FABF33;
+    color: #03466B;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    padding: 10px;
+    border-radius: 10px;
+    padding: 0.8rem;
+    margin-top: 1.2rem;
+    margin-right: auto;
+    margin-left: auto;
+    cursor: pointer;
+    -webkit-transition: ease-out 0.4s;
+    -moz-transition: ease-out 0.4s;
+    transition: ease-out 0.7s
+}
 
 .App {
   text-align: center;
 }
 
+.fade-in {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
 
+.fade-in.show {
+  opacity: 1;
+}

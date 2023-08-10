@@ -16,23 +16,14 @@
     flex-direction: column;
     text-align: start;
     gap: 1rem;
+    width: 100%;
 }
 
-.dataPlacerHolder p::after{
+.dataRow{
     display: flex;
-    content: "";
-    position: absolute;
-    width: 80vw;
-    height: 1px;
-    opacity: 50%;
-    margin-top: 0.5rem;
-    background-color: gray;
-
-}
-
-.userData{
-    display: flex;
-    flex-direction: column;
-    text-align: end;
-    gap: 1rem;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: space-between;
+    border-bottom: 1px solid;
+    padding: 0.5rem;
 }

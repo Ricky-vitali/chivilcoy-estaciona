@@ -7,38 +7,36 @@ import Support from './Support';
 import Vehicles from './Vehicles';
 import Success from './Success';
 import { GoogleMap, LoadScript, Marker, InfoWindow, Polygon } from '@react-google-maps/api';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { getDatabase, ref, onValue, off, remove, update } from 'firebase/database';
 import CarMarker from "../assets/carLocation.svg"
 import MyLocation from "../assets/myLocation.svg"
 import OfficerLocation from "../assets/officerLocation.svg"
 import CustomAlert from "../components/CustomAlert";
-import firebase from 'firebase/compat/app'; // Import compat mode for Firebase app
-import 'firebase/compat/firestore'; // Import compat mode for Firestore
+import firebase from 'firebase/compat/app'; 
+import 'firebase/compat/firestore'; 
 import 'firebase/compat/database';
 import axios from 'axios';
 import AllVehicles from './AllVehicles';
 import Profile from './Profile';
 
 
-const Map = () => {
+const Map = ({}) => {
     const { currentUser } = useAuth();
     const [carMarkers, setCarMarkers] = useState([]);
     const [selectedMarker, setSelectedMarker] = useState(null);
-    const [selectedCar, setSelectedCar] = useState(null);
     const [isOfficer, setIsOfficer] = useState(false);
     const [userCoordinates, setUserCoordinates] = useState(null);
-    const [showAlert, setShowAlert] = useState(false);
-    const [alertMessage, setAlertMessage] = useState('');
-
-/*     console.log(currentUser) */
-    
+    const [isInside, setIsInside] = useState(null);
+    const mapRef = useRef(null);
+        
+    console.log(currentUser)
 /*     const boundaryCoords = [
         { lat: -34.884723, lng: -60.019455 },
         { lat: -34.897191, lng: -60.033421 },
         { lat: -34.908861, lng: -60.018655 },
         { lat: -34.896498, lng: -60.004622 },
-    ];  */
+    ];   */
 
     const boundaryCoords = [
         { lat: -34.924947, lng: -60.017977 },
@@ -58,10 +56,9 @@ const Map = () => {
     useEffect(() => {
         // Check if the currentUser exists and is authenticated
         if (currentUser && currentUser.uid) {
-            // Create a reference to the user's document in the Firebase Realtime Database
+            
             const userRef = ref(getDatabase(), `users/${currentUser.uid}`);
 
-            // Attach a listener to the reference to read the data when it changes
             const unsubscribe = onValue(userRef, (snapshot) => {
                 // Get the value of isOfficer from the snapshot
                 const userData = snapshot.val();
@@ -71,14 +68,13 @@ const Map = () => {
                 setIsOfficer(isOfficerValue);
             });
 
-            // Clean up the listener when the component unmounts
             return () => {
-                // Detach the listener when the component unmounts
                 unsubscribe();
             };
         }
     }, [currentUser]);
 
+    
 
 
     useEffect(() => {
@@ -102,18 +98,75 @@ const Map = () => {
         };
 
         getUserCoordinates();
+    }, []); 
+
+/*     useEffect(() => {
+
+
+        const pointInPolygon = (point, polygon) => {
+            const x = point.lng, y = point.lat;
+            let inside = false;
+
+            for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+                const xi = polygon[i].lng, yi = polygon[i].lat;
+                const xj = polygon[j].lng, yj = polygon[j].lat;
+
+                const intersect = (yi > y) !== (yj > y) && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
+
+                if (intersect) {
+                    inside = !inside;
+                }
+            }
+
+            return inside;
+        };
+
+        const getUserCoordinates = () => {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    const userCoordinates = { lat: latitude, lng: longitude };
+
+                    if (pointInPolygon(userCoordinates, boundaryCoords)) {
+                        console.log("You are inside");
+                        
+                    } else {
+                        setIsInside("Estas fuera de la zona de estacionamiento.")
+                    }
+                },
+                (error) => {
+                    console.log('Error getting user coordinates:', error);
+
+                }
+            );
+        };
+
+        getUserCoordinates();
     }, []);
+ */
+
+    const handleGoToLocation = (coords) => {
+        console.log("Map comp go to:", coords)
+        if (mapRef.current) {
+
+            const targetLocation = coords;
+            const targetZoom = 17;
+
+            mapRef.current.panTo(targetLocation);
+            mapRef.current.setZoom(targetZoom);
+        }
+    };
+
 
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`https://estaciona-chivilcoy.onrender.com/parkedCars/${currentUser.uid}/${isOfficer}`);
+                const response = await axios.get(`http://localhost:8080/parkedCars/${currentUser.uid}/${isOfficer}`);
 
                 console.log("Get cars from map:", response.data);
            
                 setCarMarkers(response.data);
-                // Handle the response data as needed, e.g., set it to state or perform other operations.
              
             } catch (error) {
                 console.log(error);
@@ -152,27 +205,10 @@ const Map = () => {
         };
     }, [currentUser, isOfficer]);
 
-/*     useEffect(() => {
-        const currentUser = firebase.auth().currentUser;
-        const dbRef = firebase.database().ref(`/parkedCars/`);
-
-        const handleDataChange = (snapshot) => {
-            const data = snapshot.val();
-            setCarMarkers(Object.values(data));
-        };
-
-        dbRef.on('value', handleDataChange);
-
-        return () => {
-            // Unsubscribe from the listener when the component unmounts
-            dbRef.off('value', handleDataChange);
-        };
-    }, []); */
     
-
-    const handleMarkerClick = (marker, car) => {
+    const handleMarkerClick = (marker) => {
+        console.log("Marker:",marker)
         setSelectedMarker(marker);
-        setSelectedCar(car);
     };
 
     const mapOptions = {
@@ -201,12 +237,12 @@ const Map = () => {
     return (
         <>
             <Navbar isOfficer={isOfficer} />
-                <GoogleMap mapContainerClassName="googleMap" options={mapOptions}>
+            <GoogleMap mapContainerClassName="googleMap" options={mapOptions} onLoad={(map) => {
+                mapRef.current = map; 
+            }}>
 
                     {carMarkers.map((carMarker, index) => {
-   
-                        const car = carMarkers[index].car;
-
+  
                             return (
                                 <Marker
                                     icon={{
@@ -214,7 +250,7 @@ const Map = () => {
                                     }}
                                     key={index}
                                     position={carMarker.coordinates} 
-                                    onClick={() => handleMarkerClick(carMarker, car)}
+                                    onClick={() => handleMarkerClick(carMarker)}
                                 />
                             );
  
@@ -243,27 +279,28 @@ const Map = () => {
                     </>
                     )}
 
-                    {selectedMarker && selectedCar && (isOfficer || selectedCar.userId === currentUser.uid) && (
+                {selectedMarker && (isOfficer || selectedMarker.userId === currentUser.uid) && (
                         <InfoWindow
-                            position={selectedMarker}
+                        position={selectedMarker.coordinates}
                             onCloseClick={() => {
                                 setSelectedMarker(null);
-                                setSelectedCar(null);
                             }}
                         >
-                            <div>
-                                <h4>Nombre: {selectedCar.name}</h4>
-                                <p>Patente: {selectedCar.plate}</p>
-                                <p>Marca: {selectedCar.type}</p>
-                                <p>Expiración: {formatExpirationTime(selectedCar.expirationTime)}</p>
+                            <div>                 
+                            <h4>Patente: {selectedMarker.plate}</h4>
+                            <p><strong>Expiración: {selectedMarker.expirationTime}</strong></p>
+                            <hr/>
+                            <p>Marca: {selectedMarker.brand}</p>
+                            <p>Modelo: {selectedMarker.type}</p>
+                            <p>Color: {selectedMarker.color}</p>
+
                             </div>
                         </InfoWindow>
                     )}
                 </GoogleMap>
-     
-         
+      
             <section className="sectionContainer">
-                {showAlert && <CustomAlert message={alertMessage} />}
+                {isInside && <CustomAlert warning={true} notificationMessage={isInside} />} 
                 <Routes>
                     <Route
                         path="/"
@@ -271,7 +308,7 @@ const Map = () => {
                       
                     />
                     <Route path="/profile" element={<Profile />} />
-                    <Route path="/parking" element={isOfficer ? <AllVehicles /> : <Parking />} />
+                    <Route path="/parking" element={isOfficer ? <AllVehicles OnGoToLocation={handleGoToLocation} /> : <Parking isNotInsideBounds={isInside} />} />
                     <Route path="/vehicles" element={<Vehicles />} />
                     <Route path="/support" element={<Support />} />
                     <Route path="/success" element={<Success />} />

@@ -1,4 +1,4 @@
-import { GoogleMap, LoadScript, Marker, InfoWindow, Polygon, Icon } from '@react-google-maps/api';
+import { Marker} from '@react-google-maps/api';
 
 const CustomMarker = ({ position, icon }) => {
     const markerStyle = {

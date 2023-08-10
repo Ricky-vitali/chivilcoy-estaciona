@@ -17,7 +17,7 @@ const ConfirmAction = (props) => {
         <>
             <div className="darkBackground">
 
-                <div className="modalContainer">
+                <div className="modalConfirmContainer">
                     <div className="modalTitle">
                         <FontAwesomeIcon icon={faArrowLeft} onClick={handleCancel} />
                         <h3>{props.text}</h3>

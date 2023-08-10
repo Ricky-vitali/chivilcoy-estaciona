@@ -3,6 +3,7 @@ import { useRef, useState } from 'react'
 import { Route, Routes, BrowserRouter, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import dniDatabase from '../data/dniDatabase.json';
+import axios from 'axios';
 
 const Register = () => {
     const userNameRef = useRef()
@@ -14,6 +15,7 @@ const Register = () => {
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     async function handleSubmit(e){
         e.preventDefault()
@@ -56,6 +58,7 @@ const Register = () => {
             return setError('El DNI no existe');
         }
 
+        /* PARA CHECKEAR */
         const dniAlreadyExists = await checkIfDNIAlreadyExists(dni);
         if (dniAlreadyExists) {
             return setError('El DNI ya está registrado');
@@ -81,8 +84,21 @@ const Register = () => {
         try {
             setError('');
             setLoading(true);
-            await register(email, password, username, dni);
+            /*  */
+            const response = await axios.post("http://localhost:8080/register", {
+                email: email,
+                userName:username,
+                password:password,
+                dni:dni
+            });
+            console.log("Register response:",response.status);
+            if (response.status === 200) {
+                /* Acomodar redirection, debe llevar al inicio */
+            await login(emailRef.current.value, passwordRef.current.value);
             navigate('/');
+            }
+            
+            return response
         } catch (error) {
             if (error.code === 'auth/email-already-in-use') {
                 setError('El email ya está en uso');
@@ -107,7 +123,7 @@ const Register = () => {
                     <label htmlFor="userName">Usuario</label>
                     <input type="text" name="userName" id="userName" placeholder="Usuario" required ref={userNameRef}/>
 
-                    <label htmlFor="userName">Email</label>
+                    <label htmlFor="email">Email</label>
                     <input type="email" name="email" id="email" placeholder="Email" required ref={emailRef}/>
 
                     <label htmlFor="dni">DNI</label>

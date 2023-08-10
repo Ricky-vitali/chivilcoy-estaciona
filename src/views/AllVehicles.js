@@ -10,9 +10,10 @@ import { useAuth } from '../contexts/AuthContext';
 import LoadingCircle from "../components/LoadingCircle"
 import ConfirmAction from '../components/ConfirmAction';
 import { getDatabase, ref, onValue, off, remove, update } from 'firebase/database';
+import { collection, doc, getDoc, getFirestore } from 'firebase/firestore';
 
 
-const AllVehicles = () => {
+const AllVehicles = (props) => {
 
     const [showModal, setshowModal] = useState(false)
     const [confirmModal, setConfirmModal] = useState(false)
@@ -24,9 +25,7 @@ const AllVehicles = () => {
     const [isOfficer, setIsOfficer] = useState(false);
 
     useEffect(() => {
-        // Check if the currentUser exists and is authenticated
         if (currentUser && currentUser.uid) {
-            // Create a reference to the user's document in the Firebase Realtime Database
             const userRef = ref(getDatabase(), `users/${currentUser.uid}`);
 
             // Attach a listener to the reference to read the data when it changes
@@ -39,9 +38,7 @@ const AllVehicles = () => {
                 setIsOfficer(isOfficerValue);
             });
 
-            // Clean up the listener when the component unmounts
             return () => {
-                // Detach the listener when the component unmounts
                 unsubscribe();
             };
         }
@@ -52,12 +49,12 @@ const AllVehicles = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`https://estaciona-chivilcoy.onrender.com/parkedCars/${currentUser.uid}/${isOfficer}`);
+                const response = await axios.get(`http://localhost:8080/parkedCars/${currentUser.uid}/${isOfficer}`);
 
                 console.log("Get ALL cars officer:", response.data);
                 setCars(response.data);
                 setLoading(false)
-                // Handle the response data as needed, e.g., set it to state or perform other operations.
+                
 
             } catch (error) {
                 console.log(error);
@@ -70,6 +67,47 @@ const AllVehicles = () => {
 
 
 
+    useEffect(() => {
+        const parkedCarsRef = ref(getDatabase(), "parkedCars");
+        const parkedCarsListener = onValue(parkedCarsRef, async (snapshot) => {
+            const updatedCars = [];
+
+            snapshot.forEach((childSnapshot) => {
+                const carData = childSnapshot.val();
+                updatedCars.push(carData);
+            });
+
+            const db = getFirestore();
+            const plateCollectionRef = collection(db, 'carPlate'); 
+
+            const enhancedDataPromises = updatedCars.map(async (data) => {
+                const plate = data.plate;
+                if (typeof plate === "string" && plate.trim() !== "") {
+                    const plateDocRef = doc(plateCollectionRef, plate);
+                    const plateDoc = await getDoc(plateDocRef);
+                    if (plateDoc.exists()) {
+                        const plateData = plateDoc.data();
+                        return { ...data, ...plateData };
+                    }
+                }
+                return data;
+            });
+
+            const enhancedData = await Promise.all(enhancedDataPromises);
+
+            setCars(enhancedData);
+        });
+
+        return () => {
+            parkedCarsListener();
+        };
+    }, []);
+
+    const handleShowCar = (coords) => {
+        console.log("Handle show",coords);
+        props.OnGoToLocation(coords)
+    }
+
 
     return (
         <>
@@ -79,7 +117,7 @@ const AllVehicles = () => {
                     <LoadingCircle />
                 ) : (
                     cars.map((car) => (
-                        <VehicleCard key={car.id} car={car} disableDelete={true} />
+                        <VehicleCard key={car.id} car={car} onShowCar={handleShowCar} disableDelete={true} />
                     ))
                 )}
 

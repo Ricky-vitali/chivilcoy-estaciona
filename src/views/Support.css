@@ -23,12 +23,12 @@
     
 }
 
-textarea{
+/* textarea{
      resize: none;
-     border: 1px border #939393;
+        border: 1px border #939393; 
      padding: 1rem;
 }
-
+ */
 textarea:focus{
      outline-color: #03466B;
 }

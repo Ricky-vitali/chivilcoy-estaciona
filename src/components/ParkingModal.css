@@ -2,3 +2,9 @@
     overflow: auto;
     height: 11.125rem;
 }
+
+.formMessage{
+    margin:0;
+    opacity: 1;
+    color: #f53649;
+}

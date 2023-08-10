@@ -1,7 +1,7 @@
 import styles from './SectionTitle.css'
 
 function DynamicTitle(props) {
-    /* console.log("Section title props:",props) */
+
     return (
 
         <div className="sectionTitleContainer">

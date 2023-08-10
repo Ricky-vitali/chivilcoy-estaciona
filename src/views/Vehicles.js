@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import firebase from "firebase/compat/app";
 import "firebase/database";
-import CustomButton from "../components/CustomButton";
 import SectionTitle from "../components/SectionTitle";
 import styles from './Vehicles.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -11,6 +10,7 @@ import axios from 'axios'
 import { useAuth } from '../contexts/AuthContext';
 import LoadingCircle from "../components/LoadingCircle"
 import ConfirmAction from '../components/ConfirmAction';
+import CustomAlert from "../components/CustomAlert";
 
 
 const Vehicles = () => {
@@ -21,6 +21,7 @@ const Vehicles = () => {
     const [cars, setCars] = useState([]);
     const { currentUser } = useAuth();
     const [stateChange, setStateChange] = useState(false)
+    const [notificationMessage, setNotificationMessage] = useState('')
     const [loading, setLoading] = useState(true);
 
 /*      useEffect(() => {
@@ -74,7 +75,7 @@ const Vehicles = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`https://estaciona-chivilcoy.onrender.com/getUserData/${currentUser.uid}`);
+                const response = await axios.get(`http://localhost:8080/getUserCars/${currentUser.uid}`);
 
                 console.log("Get cars Vehicle section:", response.data);
                 setCars(response.data);
@@ -99,19 +100,7 @@ const Vehicles = () => {
             setCarToDeleteId(carId)
             setConfirmModal(true)
         }
-/*         try {
-            const response = await axios.delete("https://estaciona-chivilcoy.onrender.com/deleteCar", {
-                data: {
-                    userId: currentUser.uid,
-                    carId: carId,
-                },
-            });
 
-            // Update the cars state, filtra deleted car
-            setCars((prevCars) => prevCars.filter((car) => car.id !== carId));
-        } catch (error) {
-            console.log(error);
-        } */
     };
 
     const handleCancel = async () => {
@@ -122,17 +111,20 @@ const Vehicles = () => {
     const handleConfirmDelete = async () => {
         try {
             // Perform the car deletion using axios
-            await axios.delete("https://estaciona-chivilcoy.onrender.com/deleteCar", {
+            const response = await axios.delete("http://localhost:8080/deleteCar", {
                 data: {
                     userId: currentUser.uid,
                     carId: carToDeleteId,
                 },
             });
-
+            
             // Update the cars state, filter the deleted car
             setCars((prevCars) => prevCars.filter((car) => car.id !== carToDeleteId));
+            handleNotification(response.data.message)
+            console.log("Borrando...",response.data.message)
         } catch (error) {
             console.log(error);
+            handleNotification(error.response.data.message)
         } finally {
             // Close the confirm modal
             setConfirmModal(false);
@@ -144,6 +136,13 @@ const Vehicles = () => {
         setStateChange(!stateChange)
     };
 
+    const handleNotification = (message) => {
+        setNotificationMessage(message)
+        setTimeout(() => {
+            setNotificationMessage(null);
+        }, 4000);
+    }
+
     return (
         <>
             <div className="vehiclesContainer">
@@ -152,14 +151,15 @@ const Vehicles = () => {
                     <LoadingCircle />
                 ) : (
                     cars.map((car) => (
-                        <VehicleCard key={car.id} car={car} onDeleteCar={handleDeleteCar} />
+                        <VehicleCard key={car.id} car={car} onAddTimeNotification={handleNotification} onDeleteCar={handleDeleteCar}/>
                     ))
                 )}
 
                 <button onClick={() => setshowModal(true)}>Agregar Vehiculo</button>
             </div>
             {confirmModal && <ConfirmAction confirmText={"Eliminar Vehiculo"} text={"¿Estas seguro que quieres eliminar el vehiculo?"} onConfirm={handleConfirmDelete} onCancel={handleCancel} />}
-            {showModal && <AddCarModal onClose={() => setshowModal(false)} show={showModal} onAddCar={handleAddCar} />}
+            {showModal && <AddCarModal onGetNotification={handleNotification} onClose={() => setshowModal(false)} show={showModal} onAddCar={handleAddCar} />}
+            {notificationMessage && <CustomAlert notificationMessage={notificationMessage} />}
         </>
 
     );
