@@ -22,6 +22,8 @@ const ParkingModal = ( props, onFormSubmit ) => {
     /*    notification_url: "https://webhook.site/9db91ceb-070f-4712-bb9d-81e45f99cc1e", */
     initMercadoPago('TEST-5baae833-7718-43e6-8882-b51ba5bf2111');
 
+    initMercadoPago('TEST-5baae833-7718-43e6-8882-b51ba5bf2111');
+
     const createPreference = async () => {
         try {
             const YOUR_ACCESS_TOKEN = 'TEST-2039711323530302-072700-102a314cf2e5d98a9a91f5c25c49f643-1102603889'; // Replace this with your MercadoPago access token
@@ -38,8 +40,8 @@ const ParkingModal = ( props, onFormSubmit ) => {
                         },
                     ],  
                 back_urls: {
-                    success: `http://localhost:3000/success/`,
-                    pending: "http://localhost:3000/"
+                    success: "https://chivilcoy-estaciona.onrender.com/success", 
+                    pending: "https://chivilcoy-estaciona.onrender.com/"
                 },
                 external_reference: `${currentUser.uid}`,
            
@@ -54,15 +56,14 @@ const ParkingModal = ( props, onFormSubmit ) => {
             })
 
             const { id, collector_id } = response.data;
-            const successURL = `https://chivilcoy-estaciona.onrender.com/success/?collector_id=${collector_id}`;
-            preferenceData.back_urls.success = successURL;
-            
-            console.log("Response:", response, "Back url:",successURL,)
+        
+            console.log("Response:", response)
             return { id, collector_id };
         } catch (error) {
             console.log(error);
         }
     };
+
 
 
     const getOrderStatus = async (parsedId) => {
