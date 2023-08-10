@@ -11,10 +11,6 @@ const Success = () => {
     const queryParams = new URLSearchParams(location.search);
     const collectorId = queryParams.get('collection_id');
 
-    const location = useLocation();
-    const queryParams = new URLSearchParams(location.search);
-    const collectorId = queryParams.get('collection_id');
-
     useEffect(() => {
         const getOrderStatus = async () => {
             try {
