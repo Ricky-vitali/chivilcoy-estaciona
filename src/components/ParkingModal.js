@@ -42,7 +42,7 @@ const ParkingModal = ( props, onFormSubmit ) => {
                 },
                 external_reference: `${currentUser.uid}`,
            
-                notification_url: "https://estaciona-chivilcoy.onrender.com/webhook/mercadopago",
+                notification_url: "http://localhost:8080/webhook/mercadopago",
             };
 
             const response = await axios.post("https://api.mercadopago.com/checkout/preferences", preferenceData, {
@@ -50,10 +50,12 @@ const ParkingModal = ( props, onFormSubmit ) => {
                     Authorization: `Bearer ${YOUR_ACCESS_TOKEN}`,
                     'Content-Type': 'application/json',
                 },
-            });
+            })
 
-            const { id } = response.data;
-            return response.data;
+         
+            
+            console.log ("responseee:",response.data.collector_id) 
+            return response.data.collector_id;
         } catch (error) {
             console.log(error);
         }
@@ -61,13 +63,12 @@ const ParkingModal = ( props, onFormSubmit ) => {
 
     
 
-
     const getOrderStatus = async () => {
         try {
             const YOUR_ACCESS_TOKEN = 'TEST-2039711323530302-072700-102a314cf2e5d98a9a91f5c25c49f643-1102603889'; // Replace this with your MercadoPago access token
             console.log(`Bearer ${YOUR_ACCESS_TOKEN}`);
-
-            const response = await fetch('https://api.mercadopago.com/merchant_orders/10912306260', {
+            /* https://www.mercadopago.com.ar/developers/es/reference/payments/_payments_id/get */
+            const response = await fetch(`https://api.mercadopago.com/v1/payments/${preferenceId}`, {
                 headers: {
                     Authorization: `Bearer ${YOUR_ACCESS_TOKEN}`,
                 },
@@ -134,16 +135,17 @@ const ParkingModal = ( props, onFormSubmit ) => {
         }
     }; */
 
+
      const handleBuy = async (e) => {
         e.preventDefault();
         const id = await createPreference();
-        console.log("Handlebuy:", id.id, id)
+        console.log("Handlebuy:", id)
         if (id) {
-            setPreferenceId(id.id);
+            setPreferenceId(id);
             const orderStatus = await getOrderStatus();
-            console.log("Order in hnandle buy:", orderStatus) 
+            console.log("Order in handle buy:", orderStatus) 
         }
-    };  
+    };
 
     useEffect(() => {
         const fetchData = async () => {
