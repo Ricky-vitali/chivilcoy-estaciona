@@ -15,80 +15,30 @@ const Success = () => {
 
 
     useEffect(() => {
-        // Fetch the cars data from Firebase Realtime Database
-        const databaseRef = ref(getDatabase(), `users/${currentUser.uid}/cars`);
-        const unsubscribe = onValue(databaseRef, (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-           
-                const carsArray = Object.entries(data).map(([id, car]) => ({
-                    id,
-                    ...car,
-                }));
-                setCarsData(carsArray);
-            }
-        });
-
-  
-        return () => {
-
-            off(databaseRef, unsubscribe);
-        };
-    }, [currentUser.uid]);
-
-    useEffect(() => {
-        const updateParkingData = (carId, time) => {
-            if (!carId || !time) return;
-
-            // Get the current location
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        const { latitude, longitude } = position.coords;
-                        const coordinates = { lat: latitude, lng: longitude };
-
-                        const currentTime = new Date();
-                        const expirationTime = new Date(currentTime.getTime() + time * 60000);
-
-                        // Get a reference to the parked car in the database
-                        const parkedCarRef = ref(getDatabase(), `users/${currentUser.uid}/cars/${carId}`);
-
-                        // Update the isParked value and push the parked car data to the 'parkedCars' collection
-                        update(parkedCarRef, { isParked: true })
-                            .then(() => {
-                                // Create a new parked car object
-                                const parkedCarData = {
-                                    carId,
-                                    userId: currentUser.uid,
-                                    name: carsData.find((car) => car.id === carId).name,
-                                    plate: carsData.find((car) => car.id === carId).plate,
-                                    type: carsData.find((car) => car.id === carId).type,
-                                    expirationTime: expirationTime.toString(),
-                                    coordinates: `${coordinates.lat}, ${coordinates.lng}`,
-                                };
-
-                                // Push the parked car data to the 'parkedCars' collection
-                                const parkedCarsRef = push(ref(getDatabase(), `parkedCars`));
-                                return update(parkedCarsRef, parkedCarData);
-                            })
-                            .catch((error) => {
-                                console.log(error);
-                            });
+        const getOrderStatus = async (parsedId) => {
+            try {
+                const YOUR_ACCESS_TOKEN = 'TEST-2039711323530302-072700-102a314cf2e5d98a9a91f5c25c49f643-1102603889'; // Replace this with your MercadoPago access token
+                console.log(`Bearer ${YOUR_ACCESS_TOKEN}`);
+                /* https://www.mercadopago.com.ar/developers/es/reference/payments/_payments_id/get */
+                const response = await fetch(`https://api.mercadopago.com/v1/payments/${parsedId}`, {
+                    headers: {
+                        Authorization: `Bearer ${YOUR_ACCESS_TOKEN}`,
                     },
-                    (error) => {
-                        console.log(error);
-                    }
-                );
-            } else {
-                console.log("Geolocation is not supported by this browser.");
-            }
-        };
+                });
 
-        // If the context values are available, proceed with updating the Firebase data
-        if (selectedCarId && parkingTime) {
-            updateParkingData(selectedCarId, parkingTime);
-        }
-    }, [currentUser.uid, carsData, selectedCarId, parkingTime]);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+                console.log("Order response:", data);
+                return data;
+            } catch (error) {
+                console.log(error);
+            }
+        }; 
+        getOrderStatus()
+    }, [currentUser.uid]);
 
 
     return (
